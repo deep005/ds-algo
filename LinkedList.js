@@ -39,6 +39,52 @@ class LL {
 
   }
 
+  // 1->2->3->4->5
+  // 1->5->2->4->3
+
+
+  printRearranged(){
+  	let mid = this.head;
+   	let end = this.head;
+    
+    while(end.next !== null){
+    	mid=mid.next;
+      if(end.next.next !== null){
+      	end=end.next.next
+      }else{
+      	end=end.next
+      } 
+    }
+        
+    let curr = mid;
+    let nextNode = curr.next;
+    let temp;
+    while(nextNode !== null){
+    	temp = nextNode.next;
+    	nextNode.next = curr;
+      curr = nextNode;
+      nextNode = temp;
+    }
+     
+    end = curr;
+    curr = this.head;
+    let flag = false;
+    while(curr !== mid){
+      console.log(curr.data);
+       if(!flag){
+        temp = curr.next;
+        curr.next=end;
+        end = end.next;
+        flag = true;
+      }else{
+        curr.next = temp;
+        flag = false
+      } 
+      curr = curr.next;
+    }
+    console.log(curr.data);
+  }
+
   searchLL(data, node = this.head, index = 0) {
     if (!node) {
       console.log("not found");
@@ -146,3 +192,99 @@ newLL.printLL(); */
 //newLL.reverseLL();
 //newLL.printLL();
 //newLL.searchLL('x');
+
+
+
+
+function findIntersectionNode(head1, head2){
+
+	const hs = new Set();
+	
+  while(head1){
+  	hs.add(head1);
+    head1 = head1.next;
+  }
+  while(head2){
+  	if(hs.has(head2)){
+    	return head2;
+    }
+    head2 = head2.next;
+  }
+  return null;
+}
+
+
+
+
+class NodeDLL{
+	
+  constructor(data){
+  	this.data = data;
+  	this.prev = null;
+    this.next = null;
+  }
+}
+
+class LRUCache {
+	
+  constructor(maxCount){
+  	this.head = null;
+    this.hash = {};
+    this.count = 0;
+    this.maxCount = maxCount;
+  }
+  
+  putLRU(data){
+  	if(this.hash[data.toString()]){
+      let temp = this.hash[data.toString()];
+    	temp.prev.next = temp.next;
+      if(temp.next){
+      	temp.next.prev = temp.prev;
+      }
+      temp.next = this.head;
+      temp.prev = null;
+      this.head.prev = temp;
+      this.head = temp;
+    }else{
+    	if(this.count === this.maxCount) {
+        let temp = this.head;
+        while(temp.next){
+        	temp = temp.next;
+        }
+        this.hash[temp.data.toString()]= undefined;
+        temp.prev.next = null;
+        temp = null;
+        this.count--;
+      }
+      const newNode = new NodeDLL(data);
+      if(this.head === null){
+      	this.head = newNode;
+      }else{
+      	newNode.next = this.head;
+        this.head.prev=newNode;
+        this.head = newNode;
+      }
+      this.hash[data.toString()] = newNode;
+      this.count++;
+    }
+  }
+  
+  printLRU(){
+  	let temp = this.head;
+    const resArr = [];
+    while(temp){
+    	resArr.push(temp.data);
+      temp = temp.next;
+    }
+    console.log(resArr);
+  }
+}
+
+
+const lru = new LRUCache(5);
+const arr = [1, 2, 3, 4, 1, 2, 5, 1, 2, 3,6];
+
+arr.forEach((elem)=>{
+	lru.putLRU(elem);
+  lru.printLRU();
+})

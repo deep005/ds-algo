@@ -66,6 +66,22 @@ console.log(rotate(3, [1, 2, 3, 4, 5, 6, 7, 8]));
 console.log(rotate(30, [1, 2, 3, 4]));
 console.log(rotate(30, "Ola"));
 
+function rightRotate(arr, k){
+	let n = arr.length;
+  let actualRotate = k%n;
+  const newArr = [];
+  for(let i=0; i<arr.length; i++){
+    if(i<actualRotate){
+      newArr.push(arr[(n + i -actualRotate)]);
+    }else{
+      newArr.push(arr[(i-actualRotate)]);
+    } 
+	}
+ console.log(newArr);
+}
+
+rightRotate([1,2,3,4,5], 2)
+
 //sort an array in wave form
 
 function swap(arr, leftIndex, rightIndex) {
@@ -405,45 +421,57 @@ let K = 3;
 document.write(kthLargestSum(a, N, K));
 
 
+function mergeSortedArray(arr1, arr2){
+	
+  let merged = [];
+  let i =0, j=0;
+  
+  while(i<arr1.length && j<arr2.length){
+  	if(arr1[i] < arr2[j]){
+    	merged.push(arr1[i]);
+      i++;
+    }else{
+    	merged.push(arr2[j]);
+      j++;
+    }
+  }
+  merged = merged.concat(arr1.slice(i).concat(arr2.slice(j)));
+  return merged;
+}
+
+
+
 //Given an array arr[] of integers and a number x, 
 //the task is to find the smallest subarray with a sum greater than the given value. 
 
-function smallestSubArraySum(arr,val){
-  let start =0;
-  let sum =0;
-  let size = 0;
-  let minSize = 0;
-  let startIndex = -1, endIndex=-1;
-  let resArr = [];
-  for(let i=0;i<arr.length;i++){
-    sum = sum + arr[i];
+function smallestSubarraySum(arr,val){
+	
+  const n = arr.length;
+  let start = 0;
+  let currSum = 0;
+  let minLength = Infinity;
+  let resArr =[]
+  for(let end =0; end<n; end++){
+  	currSum = currSum + arr[end];
     
-    while(sum>val && start<i){
-      sum = sum -arr[start];
-      size = i-start;
-      start++;
-      if((size<minSize || minSize === 0) && sum >val){
-        minSize = size;
-        startIndex = start;
-        endIndex= i;
-        resArr = arr.slice(startIndex, endIndex+1);
-      }
-      else if(size===minSize){
-        const currMaxSum = resArr.reduce((acc, curr)=> acc + curr,0);
-        if(sum<currMaxSum && sum >val){
-          resArr = arr.slice(start, i+1);
-          startIndex = start;
-        	endIndex= i;
+    while(currSum > val && start <=end){
+    	
+      if(currSum > val){
+      	let subarrayLength = end - start + 1;
+        if(subarrayLength < minLength){
+        	minLength = subarrayLength;
+          resArr = arr.slice(start,end+1);
         }
-        
       }
+      currSum= currSum - arr[start];
+      start++;
     }
-    
   }
   return resArr;
 }
+console.log(smallestSubarraySum([1, 5, 45, 6, 0, 4, 19], 54)); 
 
-console.log(smallestSubArraySum([1, 4, 45, 6, 0, 19], 3));
+
 
 
 //Given a sorted array of n distinct integers where each integer is in the range 
@@ -554,7 +582,122 @@ function sortInN(arr){
   return arr;
    
 }
-
 console.log(sortInN([2,2,2,2,1,1,0,1,1,1,0,0]))
 
-      
+
+// maximum subarrya of window k
+function maximumSumSubArray(arr, k){
+  let maxSum = 0;
+  let finalStart = 0;
+  let finalEnd = k-1;
+  let sum = 0;
+  
+  for(let i =0; i< k; i++){
+    sum = sum + arr[i];
+  }
+  maxSum = sum;
+    for(let start = 0, end = k; start <(arr.length-k); start ++, end++ ){
+      sum = sum - arr[start] + arr [end];
+      if(sum > maxSum){
+        maxSum=sum;
+        finalStart = start+1;
+        finalEnd= end
+      }
+    }
+    return {
+      maxSum,
+      finalStart,
+      finalEnd
+    }
+  } 
+
+  // Given an integer array nums, find the 
+  // subarray
+  //  with the largest sum, and return its sum.
+  
+   
+  
+  // Example 1:
+  
+  // Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
+  // Output: 6
+  // Explanation: The subarray [4,-1,2,1] has the largest sum 6.
+  // Example 2:
+  
+  // Input: nums = [1]
+  // Output: 1
+  // Explanation: The subarray [1] has the largest sum 1.
+  // Example 3:
+  
+  // Input: nums = [5,4,-1,7,8]
+  // Output: 23
+  // Explanation: The subarray [5,4,-1,7,8] has the largest sum 23.
+
+  // Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
+
+function findMaximumSubarray(arr){
+  let currSum = 0;
+  let maxSum = 0;
+  for(let i =0; i<arr.length; i++){
+
+    if(currSum > 0){
+      currSum +=  arr[i]
+    }else{
+      currSum = arr[i]
+    }
+    if(currSum > maxSum){
+      maxSum = currSum
+    }
+  }
+
+  return maxSum;
+}
+class QueueImplementation {
+	
+  constructor(){
+  	this.stack1 = [];
+    this.stack2 = [];
+  }
+  
+  enqueue(data){
+  	this.stack1.push(data);
+  }
+  
+  dequeue(){
+  	if(this.stack2.length === 0){
+    	while(this.stack1.length > 0){
+      	this.stack2.push(this.stack1.pop());
+      }
+    }
+    return this.stack2.pop();
+  }
+} 
+
+function printMaxWater(arr){
+  
+  let startPtr = 0;
+  let endPtr = arr.length-1;
+  let maxWater = 0;
+  let height =0;
+  let width = 0;
+  let currentWater = 0;
+  while(startPtr !== endPtr){
+    height = Math.min(arr[startPtr], arr[endPtr]);
+    width = (endPtr-startPtr);
+    currentWater = height * width;
+    if(currentWater > maxWater){
+      maxWater = currentWater;
+    }
+    if(arr[endPtr] - arr[startPtr] >= 0){
+      startPtr++;
+    }else{
+      endPtr--;
+    }
+  }
+  return maxWater;
+}
+
+/* console.log(printMaxWater([1,8,6,2,5,4,8,3,7]))
+console.log(printMaxWater([1,1]))
+console.log(printMaxWater([8,6,2,5,4,8,3,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6])) */
+//console.log([1,8,6,2,5,4,8,3,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5].length)

@@ -191,3 +191,156 @@ function lexicoNext(str) {
 }
 
 console.log(lexicoNext(""));
+
+
+function findLongestNonRepeatingSubstring(str){
+
+  let startIndex = 0;
+  let endIndex = 0;
+  let strHash = {};
+  let largestSubstring = "";
+  let finalStartIndex = 0;
+  let finalEndIndex = 0;
+    for(endIndex; endIndex < str.length; endIndex++){
+      if(strHash[str[endIndex]] === undefined){
+        strHash[str[endIndex]] =1;
+      }else{
+        if(endIndex-startIndex > largestSubstring.length){
+          largestSubstring = str.substring(startIndex, endIndex);
+          finalStartIndex = startIndex;
+          finalEndIndex = endIndex-1;
+        }
+        while(startIndex < endIndex){
+          if(str[startIndex] !== str[endIndex]){
+            strHash[str[startIndex]] = undefined;
+            startIndex ++;
+          }else{
+            startIndex ++;
+            break;
+          }
+        }
+      }
+    }
+    if(endIndex-startIndex > largestSubstring.length){
+        largestSubstring = str.substring(startIndex, endIndex);
+        finalStartIndex = startIndex;
+          finalEndIndex = endIndex-1;
+     }
+     return {
+         value: largestSubstring,
+        start: finalStartIndex,
+        end: finalEndIndex
+     }
+} 
+
+// Given a string s, return the longest 
+// palindromic
+ 
+// substring
+//  in s.
+
+ 
+
+// Example 1:
+
+// Input: s = "babad"
+// Output: "bab"
+// Explanation: "aba" is also a valid answer.
+// Example 2:
+
+// Input: s = "cbbd"
+// Output: "bb"
+
+
+var longestPalindrome = function(s) {
+  let leftPtr = 0;
+   let rightPtr = 0;
+   let palSubstring = "";
+   let isSEven = (s.length%2 === 0);
+   let flag = false;
+   let longsetPalSubstring = s[0]
+  for(let i = 0; i< s.length; i++){
+       leftPtr =i;
+       rightPtr = i;
+       palSubstring = "";
+       flag = false;
+       while(leftPtr>-1 && rightPtr<s.length){
+           if(s[leftPtr] === s[rightPtr]){
+               palSubstring = s.substring(leftPtr, (rightPtr +1));
+               if(palSubstring.length > longsetPalSubstring.length){
+                   longsetPalSubstring = palSubstring;
+               }
+           }
+           if(isSEven && !flag){
+               rightPtr++;
+               flag = true;
+           }else{
+               rightPtr++;
+               leftPtr--;
+           }
+       }
+  }
+  return longsetPalSubstring;
+};
+
+
+
+
+/* function printSpiralMatrix(arr){
+  
+  let startRowIndex = 0;
+  let startColumnIndex = 0;
+  let endRowIndex = arr.length-1;
+  let endColumnIndex = arr[0].length-1;
+  
+  while(startRowIndex <= endRowIndex && startColumnIndex <= endColumnIndex){
+    for(let i=startColumnIndex; i<=endColumnIndex; i++){
+      console.log(arr[startRowIndex][i]);
+    }
+    startRowIndex++;
+    for(let i=startRowIndex; i<=endRowIndex; i++){
+      console.log(arr[i][endColumnIndex]);
+    }
+    endColumnIndex--;
+    
+    if(startRowIndex<=endRowIndex){
+      for(let i=endColumnIndex; i>=startColumnIndex; i--){
+      console.log(arr[endRowIndex][i]);
+    }
+      endRowIndex--;
+    }
+    
+    if(startColumnIndex<=endColumnIndex){
+      for(let i=endRowIndex; i>=startRowIndex; i--){
+      console.log(arr[i][startColumnIndex]);
+    }
+      startColumnIndex++;
+    }
+    
+  }
+}
+
+console.log(printSpiralMatrix([
+    [1, 2, 3, 4,12],
+    [5, 6, 7, 8, 13],
+    [9, 10, 11, 12,14],
+    [13, 14, 15, 16,17]
+  ])); */
+  
+  function printDFS(node){
+  	if(node === null){
+    	   return;
+    }
+    printDFS(node.lchild);
+    console.log(node.data)
+    printDFS(node.rchild);
+  }
+  
+  function printBFS(node){
+  	if(node === null){
+    	   return;
+    }
+    printBFS(node.lchild);
+    printBFS(node.rchild);
+    console.log(node.data)
+  }
